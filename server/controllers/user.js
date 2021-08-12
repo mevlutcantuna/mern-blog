@@ -60,7 +60,18 @@ const signup = async (req, res, next) => {
   }
 };
 
+const getUser = async (req, res, next) => {
+  const { _id } = req.body;
+  try {
+    const user = await User.findOne({ _id });
+    return res.status(201).json(user);
+  } catch (err) {
+    return next({ statusCode: 404, errorMessage: "Not Found..." });
+  }
+};
+
 module.exports = {
   login,
   signup,
+  getUser,
 };
