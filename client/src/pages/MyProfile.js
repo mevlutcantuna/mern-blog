@@ -174,9 +174,7 @@ const MyProfile = () => {
           <StyledProfile>
             <StyledImage src={user.picture} />
             <StyledUserName>{user.fullName}</StyledUserName>
-            <StyledPostCount>
-              Post Count : {Object.keys(myPosts).length}
-            </StyledPostCount>
+            <StyledPostCount>Post Count : {myPosts.length}</StyledPostCount>
           </StyledProfile>
           <StyledPosts>
             <StyledAddPostButton onClick={() => changeIsOpenAddPost(true)}>

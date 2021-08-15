@@ -10,6 +10,9 @@ import {
   GET_MY_POSTS_ERROR,
   GET_MY_POSTS_LOADING,
   GET_MY_POSTS_SUCCESS,
+  UPDATE_POST_ERROR,
+  UPDATE_POST_LOADING,
+  UPDATE_POST_SUCCESS,
 } from "../constants/post";
 import api from "../../utils/api";
 
@@ -31,7 +34,7 @@ export const getMyPosts = () => async (dispatch) => {
   const token = localStorage.getItem("token");
   try {
     if (!token) {
-      console.log("Not Found Token...");
+      dispatch({ type: GET_MY_POSTS_ERROR, payload: "Not Found Token...." });
     } else {
       const myPosts = await api.post("/my-posts", { token });
       dispatch({ type: GET_MY_POSTS_SUCCESS, payload: myPosts.data });
@@ -45,7 +48,6 @@ export const getMyPosts = () => async (dispatch) => {
 };
 
 export const addPost = (post) => async (dispatch) => {
-  console.log(post);
   try {
     const addedPost = await api.post("/add-post", post);
     dispatch({ type: ADD_POST_SUCCESS, payload: addedPost.data });
@@ -61,7 +63,7 @@ export const getDetailPost = (id) => async (dispatch) => {
   dispatch({ type: GET_DETAIL_POST_LOADING });
   try {
     if (id) {
-      const detailPost = await api.post("/detail-post", { id });
+      const detailPost = await api.post(`/${id}`, { id });
       dispatch({ type: GET_DETAIL_POST_SUCCESS, payload: detailPost.data });
     } else {
       dispatch({
@@ -74,5 +76,15 @@ export const getDetailPost = (id) => async (dispatch) => {
       type: GET_DETAIL_POST_ERROR,
       payload: "Something is Wrong...",
     });
+  }
+};
+
+export const updatePost = (newPost, id) => async (dispatch) => {
+  dispatch({ type: UPDATE_POST_LOADING });
+  try {
+    const response = await api.patch(`/${id.id}`, newPost);
+    dispatch({ type: UPDATE_POST_SUCCESS, payload: response.data });
+  } catch (err) {
+    dispatch({ type: UPDATE_POST_ERROR, payload: "Something is Wrong..." });
   }
 };

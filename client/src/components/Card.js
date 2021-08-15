@@ -2,9 +2,11 @@ import styled from "styled-components";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
 import UpdateIcon from "../assets/update.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PostModal from "./PostModal";
-import { showErrorMessage } from "../utils/showMessages";
+import { showErrorMessage, showSuccessMessage } from "../utils/showMessages";
+import { useDispatch, useSelector } from "react-redux";
+import { getMyPosts, updatePost } from "../store/actions/post";
 
 const StyledMain = styled.div`
   margin-bottom: 3rem;
@@ -126,12 +128,13 @@ const Card = ({ item }) => {
   const readMore = (id) => {
     history.push(`/blogs/${id}`);
   };
-
+  const { error } = useSelector((state) => state.postReducer);
+  const dispatch = useDispatch();
   const [isOpenUpdatePost, setIsOpenUpdatePost] = useState(false);
   const [updatePostTitle, setUpdatePostTitle] = useState(item.title);
   const [updatePostSummary, setUpdatePostSummary] = useState(item.summary);
   const [updatePostDetails, setUpdatePostDetails] = useState(item.details);
-  const [updatePostImage, setUpdatePostImage] = useState("");
+  const [updatePostImage, setUpdatePostImage] = useState(item.picture);
 
   const changeIsOpenUpdatePost = (value) => setIsOpenUpdatePost(value);
   const handleChangeUpdatePostTitle = (e) => setUpdatePostTitle(e.target.value);
@@ -140,17 +143,32 @@ const Card = ({ item }) => {
   const handleChangeUpdatePostDetails = (e) =>
     setUpdatePostDetails(e.target.value);
 
-  const updatePost = (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    error && showErrorMessage(error);
+  }, [error]);
 
+  const updateThePost = (e) => {
+    e.preventDefault();
     if (
       updatePostTitle.trim() === "" ||
       updatePostSummary.trim() === "" ||
-      updatePostDetails.trim() === "" ||
-      updatePostImage.trim() === ""
+      updatePostDetails.trim() === ""
     ) {
       return showErrorMessage("Please Fill all Inputs out...");
     }
+
+    const newPost = {
+      ...item,
+      title: updatePostTitle,
+      summary: updatePostSummary,
+      details: updatePostDetails,
+      picture: updatePostImage,
+      updatedAt: new Date(),
+    };
+
+    dispatch(updatePost(newPost, { id: item._id }));
+    changeIsOpenUpdatePost(false);
+    return showSuccessMessage("The Post is Updated Successfully...");
   };
 
   const myProfilePropsUpdatePost = {
@@ -166,7 +184,7 @@ const Card = ({ item }) => {
     changeOpenPost: changeIsOpenUpdatePost,
     modalName: "Update Post",
     modalButtonName: "Update Post",
-    postFunc: updatePost,
+    postFunc: updateThePost,
   };
 
   return (
@@ -188,7 +206,7 @@ const Card = ({ item }) => {
           <StyledButton onClick={() => readMore(item._id)}>
             Read More
           </StyledButton>
-          <StyledCreatedAt>{moment(item.createdAt).fromNow()}</StyledCreatedAt>
+          <StyledCreatedAt>{moment(item.updatedAt).fromNow()}</StyledCreatedAt>
         </StyledInfoBottom>
       </StyledInfo>
       <PostModal myProfilePropsPost={myProfilePropsUpdatePost} />

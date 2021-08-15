@@ -81,7 +81,7 @@ const Signup = ({ changePage, isLoginPage }) => {
   }, [error]);
 
   const token = localStorage.getItem("token");
-  console.log(token);
+
   useEffect(() => {
     if (user.fullName && !token) {
       dispatch({ type: AUTH_RESET });

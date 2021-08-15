@@ -10,6 +10,9 @@ import {
   GET_MY_POSTS_ERROR,
   GET_MY_POSTS_LOADING,
   GET_MY_POSTS_SUCCESS,
+  UPDATE_POST_ERROR,
+  UPDATE_POST_LOADING,
+  UPDATE_POST_SUCCESS,
 } from "../constants/post";
 
 const initialState = {
@@ -17,10 +20,12 @@ const initialState = {
   myPosts: [],
   addedPost: {},
   detailPost: {},
+  updatedPost: {},
   error: "",
   getAllPostLoading: false,
   getDetailPostLoading: false,
   getMyPostsLoading: false,
+  updatePostLoading: false,
 };
 
 const post = (state = initialState, action) => {
@@ -81,6 +86,22 @@ const post = (state = initialState, action) => {
         detailPost: {},
         error: action.payload,
         getDetailPostLoading: false,
+      };
+    case UPDATE_POST_SUCCESS:
+      return {
+        ...state,
+        updatedPost: action.payload,
+        updatePostLoading: false,
+        error: "",
+      };
+    case UPDATE_POST_LOADING:
+      return { ...state, updatedPost: {}, updatePostLoading: true, error: "" };
+    case UPDATE_POST_ERROR:
+      return {
+        ...state,
+        updatedPost: {},
+        updatePostLoading: false,
+        error: action.payload,
       };
     default:
       return { ...state };

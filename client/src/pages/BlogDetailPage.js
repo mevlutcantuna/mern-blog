@@ -69,7 +69,6 @@ const BlogDetailPage = () => {
   const { detailPost, getDetailPostLoading } = useSelector(
     (state) => state.postReducer
   );
-  console.log(detailPost);
 
   useEffect(() => {
     dispatch(getDetailPost(id));

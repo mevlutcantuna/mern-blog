@@ -66,7 +66,19 @@ const getDetailPost = async (req, res, next) => {
   }
 };
 
-const updatePost = async (req, res, next) => {};
+const updatePost = async (req, res, next) => {
+  const newPost = req.body;
+  const id = req.params.id;
+  try {
+    const updatedPost = await Post.findByIdAndUpdate(id, newPost, {
+      new: true,
+    });
+    //console.log(post);
+    res.status(201).json(updatedPost);
+  } catch (err) {
+    return next({ statusCode: 404, errorMessage: "Don't Update Post..." });
+  }
+};
 
 module.exports = {
   getAllPosts,

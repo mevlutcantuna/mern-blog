@@ -1,20 +1,6 @@
-import { Modal } from "antd";
+import { Modal, Spin } from "antd";
 import styled from "styled-components";
 import FileBase64 from "react-file-base64";
-
-const customStyles = {
-  content: {
-    width: "40rem",
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
-
-//Modal.setAppElement("#root");
 
 const StyledForm = styled.form`
   width: 100%;
@@ -122,43 +108,41 @@ const PostModal = ({ myProfilePropsPost }) => {
   } = myProfilePropsPost;
 
   return (
-    <>
-      <Modal
-        title={null}
-        visible={openPost}
-        footer={null}
-        onOk={() => changeOpenPost(true)}
-        onCancel={() => changeOpenPost(false)}
-      >
-        <StyledForm>
-          <StyledFormName>{modalName}</StyledFormName>
-          <StyledInput
-            value={postTitle}
-            onChange={handlePostTitle}
-            placeholder="Post Title..."
+    <Modal
+      title={null}
+      visible={openPost}
+      footer={null}
+      onOk={() => changeOpenPost(true)}
+      onCancel={() => changeOpenPost(false)}
+    >
+      <StyledForm onSubmit={postFunc}>
+        <StyledFormName>{modalName}</StyledFormName>
+        <StyledInput
+          value={postTitle}
+          onChange={handlePostTitle}
+          placeholder="Post Title..."
+        />
+        <StyledInput
+          value={postSummary}
+          onChange={handlePostSummary}
+          placeholder="Post Summary..."
+        />
+        <StyledTextArea
+          value={postDetails}
+          rows="5"
+          placeholder="Post Details..."
+          onChange={handlePostDetails}
+        />
+        <StyledImageInput>
+          <FileBase64
+            multiple={false}
+            onDone={({ base64 }) => handlePostImage(base64)}
           />
-          <StyledInput
-            value={postSummary}
-            onChange={handlePostSummary}
-            placeholder="Post Summary..."
-          />
-          <StyledTextArea
-            value={postDetails}
-            rows="5"
-            placeholder="Post Details..."
-            onChange={handlePostDetails}
-          />
-          <StyledImageInput>
-            <FileBase64
-              multiple={false}
-              onDone={({ base64 }) => handlePostImage(base64)}
-            />
-          </StyledImageInput>
+        </StyledImageInput>
 
-          <StyledButton onClick={postFunc}>{modalButtonName}</StyledButton>
-        </StyledForm>
-      </Modal>
-    </>
+        <StyledButton>{modalButtonName}</StyledButton>
+      </StyledForm>
+    </Modal>
   );
 };
 
