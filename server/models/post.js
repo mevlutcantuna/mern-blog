@@ -6,6 +6,11 @@ const PostSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  author: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   title: {
     required: true,
     type: String,
@@ -27,6 +32,10 @@ const PostSchema = new mongoose.Schema({
     trim: true,
   },
   createdAt: {
+    type: Date,
+    default: new Date(),
+  },
+  updatedAt: {
     type: Date,
     default: new Date(),
   },

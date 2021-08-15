@@ -2,8 +2,9 @@ import styled from "styled-components";
 import Header from "./Header";
 import { signup } from "../../store/actions/auth";
 import { showErrorMessage, showSuccessMessage } from "../../utils/showMessages";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { AUTH_RESET } from "../../store/constants/auth";
 
 const StyledMain = styled.div`
   width: 25rem;
@@ -63,7 +64,7 @@ const Signup = ({ changePage, isLoginPage }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.authReducer.user);
+  const { user, error } = useSelector((state) => state.authReducer);
 
   const handleChangeFullName = (e) => {
     setFullName(e.target.value);
@@ -74,6 +75,20 @@ const Signup = ({ changePage, isLoginPage }) => {
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
   };
+
+  useEffect(() => {
+    error && showErrorMessage(error);
+  }, [error]);
+
+  const token = localStorage.getItem("token");
+  console.log(token);
+  useEffect(() => {
+    if (user.fullName && !token) {
+      dispatch({ type: AUTH_RESET });
+      changePage(true);
+      return showSuccessMessage("You signed up successfully....");
+    }
+  }, [user, changePage, dispatch, token]);
 
   const signupForm = (e) => {
     e.preventDefault();
@@ -86,23 +101,12 @@ const Signup = ({ changePage, isLoginPage }) => {
     }
 
     const lengthOfPassword = password.split("").length;
-
     if (lengthOfPassword < 6) {
       return showErrorMessage("Password must le logger than 6 ...");
     }
+
     const userInfo = { fullName, email, password };
-
     dispatch(signup(userInfo));
-
-    if (
-      user === "Request failed with status code 404" ||
-      user.picture === false
-    ) {
-      return showErrorMessage("Sign Up is failed!!!");
-    }
-
-    changePage(true);
-    return showSuccessMessage("You logged in successfully....");
   };
 
   return (

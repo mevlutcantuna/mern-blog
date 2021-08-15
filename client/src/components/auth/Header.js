@@ -32,6 +32,7 @@ const StyledButton = styled.span`
 `;
 
 const Header = ({ changePage, isLoginPage }) => {
+  console.log(isLoginPage);
   return (
     <StyledMain>
       <StyledButton

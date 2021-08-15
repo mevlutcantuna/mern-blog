@@ -11,4 +11,8 @@ export const route = {
     title: "Blog Detail Page",
     path: "/blogs/:id",
   },
+  myProfile: {
+    title: "My Profile Page",
+    path: "/my-profile",
+  },
 };

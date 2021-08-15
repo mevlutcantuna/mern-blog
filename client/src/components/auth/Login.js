@@ -1,10 +1,9 @@
 import styled from "styled-components";
 import Header from "./Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { login } from "../../store/actions/auth";
 import { showErrorMessage, showSuccessMessage } from "../../utils/showMessages";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 
 const StyledMain = styled.div`
   width: 25rem;
@@ -63,8 +62,7 @@ const Login = ({ changePage, isLoginPage }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.authReducer.user);
-  const history = useHistory();
+  const { user, error } = useSelector((state) => state.authReducer);
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
@@ -73,29 +71,30 @@ const Login = ({ changePage, isLoginPage }) => {
     setPassword(e.target.value);
   };
 
+  useEffect(() => {
+    error && showErrorMessage(error);
+  }, [error]);
+
+  useEffect(() => {
+    user.fullName && showSuccessMessage("You have successfully logged in!");
+  }, [user.fullName]);
+
   const loginForm = (e) => {
     e.preventDefault();
+    // check inputs
     if (email.trim() === "" && password.trim() === "") {
       return showErrorMessage("Please Provide Inputs Correctly...");
     }
 
+    // check length of password
     const lengthOfPassword = password.split("").length;
-
     if (lengthOfPassword < 6) {
       return showErrorMessage("Password must be logger than 6...");
     }
 
+    // login
     const userInfo = { email, password };
-
     dispatch(login(userInfo));
-
-    if (user === "Request failed with status code 404") {
-      return showErrorMessage("Login is Failed!!!");
-    }
-    const token = user.password;
-    localStorage.setItem("token", JSON.stringify(token));
-    history.push("/blogs");
-    return showSuccessMessage("Login is Succeed!!!");
   };
 
   return (
