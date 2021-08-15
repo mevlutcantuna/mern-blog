@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const userRouter = require("./routes/user");
+const postRouter = require("./routes/post");
 const catchAllErrorHandler = require("./middlewares/catchAllErrorHandler");
 
 const app = express();
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(userRouter);
+app.use(postRouter);
 
 app.use(catchAllErrorHandler);
 
