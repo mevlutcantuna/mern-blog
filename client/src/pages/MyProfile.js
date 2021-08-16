@@ -100,9 +100,8 @@ const StyledNotFoundPost = styled.div`
 
 const MyProfile = () => {
   const dispatch = useDispatch();
-  const { getMyPostsLoading, myPosts } = useSelector(
-    (state) => state.postReducer
-  );
+  const { getMyPostsLoading, myPosts, updatedPost, error, addedPost } =
+    useSelector((state) => state.postReducer);
   const { user } = useSelector((state) => state.authReducer);
   const [isOpenAddPost, setIsOpenAddPost] = useState(false);
   const [newPostTitle, setNewPostTitle] = useState("");
@@ -118,6 +117,29 @@ const MyProfile = () => {
   useEffect(() => {
     dispatch(getMyPosts());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (updatedPost) {
+      dispatch(getMyPosts());
+      return showSuccessMessage("The Post is Updated Successfully...");
+    }
+  }, [dispatch, updatedPost]);
+
+  useEffect(() => {
+    if (addedPost) {
+      setNewPostImage("");
+      setNewPostDetails("");
+      setNewPostTitle("");
+      setNewPostSummary("");
+      dispatch(getMyPosts());
+
+      return showSuccessMessage("You Add your Post Correctly....");
+    }
+  }, [addedPost, dispatch]);
+
+  useEffect(() => {
+    error.trim() !== "" && showErrorMessage(error);
+  }, [error]);
 
   const addNewPost = (e) => {
     e.preventDefault();
@@ -140,13 +162,7 @@ const MyProfile = () => {
       return showErrorMessage("Please Fill all inputs out...");
     } else {
       dispatch(addPost(post));
-      if (!myPosts.length > 0) {
-        return showErrorMessage("Something is Wrong.You could not add post...");
-      } else {
-        changeIsOpenAddPost(false);
-        dispatch(getMyPosts());
-        return showSuccessMessage("You Add your Post Correctly....");
-      }
+      changeIsOpenAddPost(false);
     }
   };
 

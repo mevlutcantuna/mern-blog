@@ -18,9 +18,9 @@ import {
 const initialState = {
   allPosts: [],
   myPosts: [],
-  addedPost: {},
+  addedPost: null,
   detailPost: {},
-  updatedPost: {},
+  updatedPost: null,
   error: "",
   getAllPostLoading: false,
   getDetailPostLoading: false,
@@ -65,7 +65,7 @@ const post = (state = initialState, action) => {
     case ADD_POST_SUCCESS:
       return { ...state, addedPost: action.payload, error: "" };
     case ADD_POST_ERROR:
-      return { ...state, addedPost: [], error: action.payload };
+      return { ...state, addedPost: null, error: action.payload };
     case GET_DETAIL_POST_SUCCESS:
       return {
         ...state,
@@ -90,16 +90,28 @@ const post = (state = initialState, action) => {
     case UPDATE_POST_SUCCESS:
       return {
         ...state,
+        allPosts: state.allPosts.map((item) => {
+          if (item._id === action.payload._id) {
+            return action.payload;
+          } else {
+            return item;
+          }
+        }),
         updatedPost: action.payload,
         updatePostLoading: false,
         error: "",
       };
     case UPDATE_POST_LOADING:
-      return { ...state, updatedPost: {}, updatePostLoading: true, error: "" };
+      return {
+        ...state,
+        updatedPost: null,
+        updatePostLoading: true,
+        error: "",
+      };
     case UPDATE_POST_ERROR:
       return {
         ...state,
-        updatedPost: {},
+        updatedPost: null,
         updatePostLoading: false,
         error: action.payload,
       };

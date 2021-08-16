@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import UpdateIcon from "../assets/update.svg";
 import { useEffect, useState } from "react";
 import PostModal from "./PostModal";
-import { showErrorMessage, showSuccessMessage } from "../utils/showMessages";
+import { showErrorMessage } from "../utils/showMessages";
 import { useDispatch, useSelector } from "react-redux";
 import { getMyPosts, updatePost } from "../store/actions/post";
 
@@ -86,6 +86,9 @@ const StyledTitle = styled.div`
 const StyledUpdatedButton = styled.div`
   width: 5rem;
   text-align: center;
+  display: ${({ id, token }) => console.log(id, token)};
+
+  display: ${({ id, token }) => (id === token && token ? `` : `none`)};
 `;
 
 const StyledSummary = styled.div`
@@ -168,7 +171,7 @@ const Card = ({ item }) => {
 
     dispatch(updatePost(newPost, { id: item._id }));
     changeIsOpenUpdatePost(false);
-    return showSuccessMessage("The Post is Updated Successfully...");
+    dispatch(getMyPosts());
   };
 
   const myProfilePropsUpdatePost = {
@@ -193,7 +196,10 @@ const Card = ({ item }) => {
       <StyledInfo>
         <StyledTop>
           <StyledTitle>{item.title}</StyledTitle>
-          <StyledUpdatedButton>
+          <StyledUpdatedButton
+            id={item.user}
+            token={localStorage.getItem("token")}
+          >
             <img
               onClick={() => changeIsOpenUpdatePost(true)}
               src={UpdateIcon}

@@ -1,4 +1,4 @@
-import { Modal, Spin } from "antd";
+import { Modal } from "antd";
 import styled from "styled-components";
 import FileBase64 from "react-file-base64";
 

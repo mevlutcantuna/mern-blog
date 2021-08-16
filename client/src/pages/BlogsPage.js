@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Card from "../components/Card";
 import { Spin } from "antd";
+import { showSuccessMessage } from "../utils/showMessages";
 
 const StyledMain = styled.div`
   margin: 0 20%;
@@ -26,9 +27,16 @@ const StyledCards = styled.div`
 
 const BlogsPage = () => {
   const dispatch = useDispatch();
-  const { allPosts, getAllPostLoading } = useSelector(
+  const { allPosts, getAllPostLoading, updatedPost } = useSelector(
     (state) => state.postReducer
   );
+
+  useEffect(() => {
+    if (updatedPost) {
+      dispatch(getAllPosts());
+      return showSuccessMessage("The Post is Updated Successfully...");
+    }
+  }, [updatedPost, dispatch]);
 
   useEffect(() => {
     dispatch(getAllPosts());
