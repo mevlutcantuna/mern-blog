@@ -8,6 +8,7 @@ import Card from "../components/Card";
 import styled from "styled-components";
 import { addPost } from "../store/actions/post";
 import { showErrorMessage, showSuccessMessage } from "../utils/showMessages";
+import { RESET_GETTING_DATA } from "../store/constants/post";
 
 const StyledContainer = styled.div`
   margin: 0 5%;
@@ -100,8 +101,17 @@ const StyledNotFoundPost = styled.div`
 
 const MyProfile = () => {
   const dispatch = useDispatch();
-  const { getMyPostsLoading, myPosts, updatedPost, error, addedPost } =
-    useSelector((state) => state.postReducer);
+  const {
+    getMyPostsLoading,
+    deletePostLoading,
+    updatePostLoading,
+    addPostLoading,
+    myPosts,
+    updatedPost,
+    deletedPost,
+    error,
+    addedPost,
+  } = useSelector((state) => state.postReducer);
   const { user } = useSelector((state) => state.authReducer);
   const [isOpenAddPost, setIsOpenAddPost] = useState(false);
   const [newPostTitle, setNewPostTitle] = useState("");
@@ -116,6 +126,7 @@ const MyProfile = () => {
 
   useEffect(() => {
     dispatch(getMyPosts());
+    dispatch({ type: RESET_GETTING_DATA });
   }, [dispatch]);
 
   useEffect(() => {
@@ -126,13 +137,19 @@ const MyProfile = () => {
   }, [dispatch, updatedPost]);
 
   useEffect(() => {
+    if (deletedPost) {
+      dispatch(getMyPosts());
+      return showSuccessMessage("The Post is Deleted Successfully...");
+    }
+  }, [deletedPost, dispatch]);
+
+  useEffect(() => {
     if (addedPost) {
       setNewPostImage("");
       setNewPostDetails("");
       setNewPostTitle("");
       setNewPostSummary("");
       dispatch(getMyPosts());
-
       return showSuccessMessage("You Add your Post Correctly....");
     }
   }, [addedPost, dispatch]);
@@ -151,6 +168,7 @@ const MyProfile = () => {
       summary: newPostSummary,
       details: newPostDetails,
       picture: newPostImage,
+      updatedAt: new Date(),
     };
 
     if (
@@ -162,6 +180,10 @@ const MyProfile = () => {
       return showErrorMessage("Please Fill all inputs out...");
     } else {
       dispatch(addPost(post));
+      setNewPostTitle("");
+      setNewPostSummary("");
+      setNewPostDetails("");
+      setNewPostImage(null);
       changeIsOpenAddPost(false);
     }
   };
@@ -181,11 +203,17 @@ const MyProfile = () => {
     modalButtonName: "Add Post",
     postFunc: addNewPost,
   };
-
   return (
     <>
       <Navbar />
-      <Spin spinning={getMyPostsLoading}>
+      <Spin
+        spinning={
+          getMyPostsLoading ||
+          deletePostLoading ||
+          updatePostLoading ||
+          addPostLoading
+        }
+      >
         <StyledContainer>
           <StyledProfile>
             <StyledImage src={user.picture} />

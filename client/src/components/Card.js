@@ -2,11 +2,13 @@ import styled from "styled-components";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
 import UpdateIcon from "../assets/update.svg";
+import DeleteIcon from "../assets/delete.svg";
 import { useEffect, useState } from "react";
 import PostModal from "./PostModal";
 import { showErrorMessage } from "../utils/showMessages";
 import { useDispatch, useSelector } from "react-redux";
-import { getMyPosts, updatePost } from "../store/actions/post";
+import { getMyPosts, updatePost, deletePost } from "../store/actions/post";
+import { Modal } from "antd";
 
 const StyledMain = styled.div`
   margin-bottom: 3rem;
@@ -83,11 +85,9 @@ const StyledTitle = styled.div`
   flex: 1;
 `;
 
-const StyledUpdatedButton = styled.div`
+const StyledSettings = styled.div`
   width: 5rem;
   text-align: center;
-  display: ${({ id, token }) => console.log(id, token)};
-
   display: ${({ id, token }) => (id === token && token ? `` : `none`)};
 `;
 
@@ -174,6 +174,17 @@ const Card = ({ item }) => {
     dispatch(getMyPosts());
   };
 
+  const deleteThePost = (id) => {
+    dispatch(deletePost(id));
+  };
+
+  const warningModal = (id) => {
+    Modal.confirm({
+      title: "Are You Sure to Delete Post?",
+      onOk: () => deleteThePost(id),
+    });
+  };
+
   const myProfilePropsUpdatePost = {
     postTitle: updatePostTitle,
     postSummary: updatePostSummary,
@@ -189,23 +200,25 @@ const Card = ({ item }) => {
     modalButtonName: "Update Post",
     postFunc: updateThePost,
   };
-
   return (
     <StyledMain>
       <StyledImage alt="picture" src={item.picture} />
       <StyledInfo>
         <StyledTop>
           <StyledTitle>{item.title}</StyledTitle>
-          <StyledUpdatedButton
-            id={item.user}
-            token={localStorage.getItem("token")}
-          >
+          <StyledSettings id={item.user} token={localStorage.getItem("token")}>
             <img
               onClick={() => changeIsOpenUpdatePost(true)}
               src={UpdateIcon}
               alt="update-icon"
+              style={{ marginRight: "0.5rem" }}
             />
-          </StyledUpdatedButton>
+            <img
+              onClick={() => warningModal(item._id)}
+              src={DeleteIcon}
+              alt="delete-icon"
+            />
+          </StyledSettings>
         </StyledTop>
         <StyledSummary>{item.summary}</StyledSummary>
         <StyledInfoBottom>

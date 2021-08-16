@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Card from "../components/Card";
 import { Spin } from "antd";
 import { showSuccessMessage } from "../utils/showMessages";
+import { RESET_GETTING_DATA } from "../store/constants/post";
 
 const StyledMain = styled.div`
   margin: 0 20%;
@@ -27,25 +28,48 @@ const StyledCards = styled.div`
 
 const BlogsPage = () => {
   const dispatch = useDispatch();
-  const { allPosts, getAllPostLoading, updatedPost } = useSelector(
-    (state) => state.postReducer
-  );
+  const {
+    allPosts,
+    getAllPostLoading,
+    deletePostLoading,
+    updatePostLoading,
+    addPostLoading,
+    updatedPost,
+    deletedPost,
+  } = useSelector((state) => state.postReducer);
+
+  useEffect(() => {
+    dispatch(getAllPosts());
+    dispatch({ type: RESET_GETTING_DATA });
+  }, [dispatch]);
 
   useEffect(() => {
     if (updatedPost) {
       dispatch(getAllPosts());
+      dispatch({ type: RESET_GETTING_DATA });
       return showSuccessMessage("The Post is Updated Successfully...");
     }
   }, [updatedPost, dispatch]);
 
   useEffect(() => {
-    dispatch(getAllPosts());
-  }, [dispatch]);
+    if (deletedPost) {
+      dispatch(getAllPosts());
+      dispatch({ type: RESET_GETTING_DATA });
+      return showSuccessMessage("The Post is Deleted Successfully...");
+    }
+  }, [dispatch, deletedPost]);
 
   return (
     <>
       <Navbar />
-      <Spin spinning={getAllPostLoading}>
+      <Spin
+        spinning={
+          getAllPostLoading ||
+          deletePostLoading ||
+          updatePostLoading ||
+          addPostLoading
+        }
+      >
         <StyledMain>
           {allPosts.length > 0 && (
             <StyledCards>

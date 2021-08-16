@@ -1,6 +1,10 @@
 import {
   ADD_POST_ERROR,
+  ADD_POST_LOADING,
   ADD_POST_SUCCESS,
+  DELETE_POST_ERROR,
+  DELETE_POST_LOADING,
+  DELETE_POST_SUCCESS,
   GET_ALL_POSTS_ERROR,
   GET_ALL_POSTS_LOADING,
   GET_ALL_POSTS_SUCCESS,
@@ -48,6 +52,7 @@ export const getMyPosts = () => async (dispatch) => {
 };
 
 export const addPost = (post) => async (dispatch) => {
+  dispatch({ type: ADD_POST_LOADING });
   try {
     const addedPost = await api.post("/add-post", post);
     dispatch({ type: ADD_POST_SUCCESS, payload: addedPost.data });
@@ -86,5 +91,16 @@ export const updatePost = (newPost, id) => async (dispatch) => {
     dispatch({ type: UPDATE_POST_SUCCESS, payload: response.data });
   } catch (err) {
     dispatch({ type: UPDATE_POST_ERROR, payload: "Something is Wrong..." });
+  }
+};
+
+export const deletePost = (id) => async (dispatch) => {
+  dispatch({ type: DELETE_POST_LOADING });
+  try {
+    const response = await api.delete(`/${id}`);
+    console.log(response);
+    dispatch({ type: DELETE_POST_SUCCESS, payload: response.data });
+  } catch (err) {
+    dispatch({ type: DELETE_POST_ERROR, payload: "Something is Wrong..." });
   }
 };

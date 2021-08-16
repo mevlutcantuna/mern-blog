@@ -80,10 +80,21 @@ const updatePost = async (req, res, next) => {
   }
 };
 
+const deletePost = async (req, res, next) => {
+  const { id: _id } = req.params;
+  try {
+    const deletedPost = await Post.findByIdAndDelete(_id);
+    res.json(deletedPost);
+  } catch (err) {
+    return next({ statusCode: "404", errorMessage: "Don't Delete Post..." });
+  }
+};
+
 module.exports = {
   getAllPosts,
   getMyPosts,
   addPost,
   getDetailPost,
   updatePost,
+  deletePost,
 };
