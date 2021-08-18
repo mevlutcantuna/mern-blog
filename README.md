@@ -1,4 +1,4 @@
-# mern-blog
+# MERN-Blog
 
 Demo Backend: 
 ```
