@@ -1,4 +1,4 @@
-# MERN-Blog
+# MERN - Blog
 
 In this project,I worked with mongoDB, ExpressJS, React, NodeJS. I made blog website. You can read blogs,also if you want to write blog,you must signup and login then you can post a blog.You can go your profile website and it shows your blogs and you can add a new blog there.Also yocu can update your blogs.In main page,blogs show by updated time. 
 
