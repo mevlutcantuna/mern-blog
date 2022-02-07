@@ -15,7 +15,7 @@ Demo Frontend:
 ## Features
 - Login and Signup
 - Add Blog
-- Delete Blog
+- Delete Blog   
 - Update Blog
 - Shows Details of Blogs
 - Profile Page
